@@ -23,11 +23,33 @@
     </nav>
     <div class="header-actions">
       <a class="btn btn--outline btn--icon" href="find-a-task.html" aria-label="Search tasks"><img src="assets/icons/search.svg" alt="" width="22" height="22"></a>
+<div class="notif" data-notif>
+        <button class="btn btn--outline btn--icon notif__btn" type="button" aria-label="Notifications" aria-expanded="false" aria-haspopup="true"><img src="assets/icons/bell.svg" alt="" width="22" height="22"><span class="notif__dot" hidden></span></button>
+        <div class="notif__panel" role="dialog" aria-label="Notifications" hidden>
+          <p class="notif__title">Notifications</p>
+          <div class="notif__item" data-notif-profile hidden>
+            <p><strong>Finish setting up your profile</strong></p>
+            <p>Add your area and how you want to take part to see tasks near you and your best matches.</p>
+            <a class="btn btn--primary notif__cta" href="onboarding.html">Complete profile</a>
+          </div>
+          <p class="notif__empty" data-notif-empty>You are all caught up.</p>
+        </div>
+      </div>
       <a class="account-chip" href="dashboard.html"><span class="avatar" data-initial>A</span><span data-first-name>My dashboard</span></a>
       <a class="btn btn--outline" href="index.html" data-logout>Log out</a>
     </div>
     <div class="mobile-header-actions">
       <a class="icon-btn mobile-search" href="find-a-task.html" aria-label="Search tasks"><img src="assets/icons/search.svg" alt="" width="22" height="22" style="width:22px;height:22px"></a>
+      <div class="notif notif--mobile" data-notif><button class="icon-btn notif__btn" type="button" aria-label="Notifications" aria-expanded="false" aria-haspopup="true"><img src="assets/icons/bell.svg" alt="" width="22" height="22" style="width:22px;height:22px"><span class="notif__dot" hidden></span></button>
+        <div class="notif__panel" role="dialog" aria-label="Notifications" hidden>
+          <p class="notif__title">Notifications</p>
+          <div class="notif__item" data-notif-profile hidden>
+            <p><strong>Finish setting up your profile</strong></p>
+            <p>Add your area and how you want to take part to see tasks near you and your best matches.</p>
+            <a class="btn btn--primary notif__cta" href="onboarding.html">Complete profile</a>
+          </div>
+          <p class="notif__empty" data-notif-empty>You are all caught up.</p>
+        </div></div>
       <button class="icon-btn menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu"><img src="assets/icons/menu-menu.svg" alt="" width="48" height="48"></button>
     </div>
   </header>
@@ -71,11 +93,6 @@
     </div>
 
     <section class="dash-panel" data-panel="give" aria-label="Giving help">
-      <div class="stats">
-        <div class="stat"><p class="stat__value">6.5</p><p class="stat__label">Hours given this month</p></div>
-        <div class="stat"><p class="stat__value">9</p><p class="stat__label">Tasks completed</p></div>
-        <div class="stat"><p class="stat__value">4.9</p><p class="stat__label">Average review</p></div>
-      </div>
       <div class="dash-section">
         <div class="dash-section__head">
           <h2>Best matches for you</h2>

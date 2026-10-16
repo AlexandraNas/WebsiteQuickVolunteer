@@ -1,4 +1,4 @@
-// QuickVolunteer · front-end behaviour 
+// QuickVolunteer · front-end behaviour (no frameworks)
 // Later, the forms will send their data to the Flask back end with fetch().
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setUpOnboarding();
   setUpDashboard();
   setUpLogout();
+  setUpNotifications();
 });
 
 /* ---------- Saved profile (prototype only) ----------
@@ -50,15 +51,55 @@ function setUpOnboarding() {
   });
 
   const role = () => (form.querySelector("[name=role]:checked") || {}).value;
+  const askOnly = () => role() === "help_seeker";
+
+  // People who only ask for help have 2 steps; everyone else has 3.
+  // On step 2 the button stays disabled until a choice is made, and it
+  // becomes "Finish" when the choice is "Ask for help".
+  function updateButton() {
+    const total = askOnly() ? 2 : 3;
+    label.textContent = `Step ${current} of ${total}`;
+    fill.style.width = `${(current / total) * 100}%`;
+    const last = current === total;
+    next.textContent = last ? "Finish" : "Continue";
+    next.disabled = current === 2 && !role();
+  }
+  form.querySelectorAll("[name=role]").forEach((r) => r.addEventListener("change", updateButton));
+
+  function saveAndFinish() {
+    const stillAskOnly = askOnly();
+    saveProfile({
+      ...saved,
+      postcode: form.postcode.value.trim().toUpperCase(),
+      area: form.area.value.trim(),
+      distance: form.querySelector("[name=distance]:checked").value,
+      role: role(),
+      skills: stillAskOnly ? [] : Array.from(form.querySelectorAll("[name=skills]:checked")).map((b) => b.value),
+      mode: stillAskOnly ? null : form.querySelector("[name=mode]:checked").value,
+      skipped: false,
+    });
+    window.location.href = "dashboard.html";
+  }
+
+  // Skip for now: keep what was typed (if valid) and go to the dashboard
+  document.getElementById("onboard-skip").addEventListener("click", () => {
+    const profile = { ...saved, skipped: !saved.role };
+    if (!validate(1)) {
+      profile.postcode = form.postcode.value.trim().toUpperCase();
+      profile.area = form.area.value.trim();
+    }
+    markInvalid(form.postcode, false);
+    markInvalid(form.area, false);
+    saveProfile(profile);
+    window.location.href = "dashboard.html";
+  });
 
   function show(step, moveFocus = true) {
     current = step;
     steps.forEach((s) => s.classList.toggle("is-active", Number(s.dataset.step) === step));
-    label.textContent = `Step ${step} of 3`;
-    fill.style.width = `${(step / 3) * 100}%`;
     back.hidden = step === 1;
-    next.textContent = step === 3 ? "Finish" : "Continue";
     showError(form, null);
+    updateButton();
 
     // Step 3 wording changes for people who only ask for help
     if (step === 3) {
@@ -93,18 +134,9 @@ function setUpOnboarding() {
     e.preventDefault();
     const problem = validate(current);
     if (problem) { showError(form, problem); return; }
+    if (current === 2 && askOnly()) { saveAndFinish(); return; }
     if (current < 3) { show(current + 1); return; }
-
-    saveProfile({
-      ...saved,
-      postcode: form.postcode.value.trim().toUpperCase(),
-      area: form.area.value.trim(),
-      distance: form.querySelector("[name=distance]:checked").value,
-      role: role(),
-      skills: Array.from(form.querySelectorAll("[name=skills]:checked")).map((b) => b.value),
-      mode: form.querySelector("[name=mode]:checked").value,
-    });
-    window.location.href = "dashboard.html";
+    saveAndFinish();
   });
 
   show(1, false);
@@ -374,5 +406,32 @@ function setUpReportLinks() {
       note.textContent = "Thank you. Our team will review this concern.";
       btn.after(note);
     });
+  });
+}
+
+/* ---------- Notifications in the top bar ---------- */
+function setUpNotifications() {
+  const boxes = document.querySelectorAll("[data-notif]");
+  if (!boxes.length) return;
+  const profile = loadProfile();
+  const incomplete = !(profile.role && profile.postcode);
+
+  boxes.forEach((box) => {
+    const btn = box.querySelector(".notif__btn");
+    const panel = box.querySelector(".notif__panel");
+    box.querySelector(".notif__dot").hidden = !incomplete;
+    box.querySelector("[data-notif-profile]").hidden = !incomplete;
+    box.querySelector("[data-notif-empty]").hidden = incomplete;
+    btn.setAttribute("aria-label", incomplete ? "Notifications, 1 new" : "Notifications");
+
+    const close = () => { panel.hidden = true; btn.setAttribute("aria-expanded", "false"); };
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = panel.hidden;
+      panel.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+    });
+    document.addEventListener("click", (e) => { if (!box.contains(e.target)) close(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
   });
 }
