@@ -1,4 +1,4 @@
-// QuickVolunteer · front-end behaviour
+// QuickVolunteer · front-end behaviour 
 // Later, the forms will send their data to the Flask back end with fetch().
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,7 +9,157 @@ document.addEventListener("DOMContentLoaded", () => {
   setUpSignupForm();
   setUpTaskFilters();
   setUpReportLinks();
+  setUpOnboarding();
+  setUpDashboard();
+  setUpLogout();
 });
+
+/* ---------- Saved profile (prototype only) ----------
+   For now the profile is kept in the browser with localStorage.
+   Later Flask will save it in MySQL (USERS: postcode, account_type,
+   skills) and send it back with fetch(). */
+const PROFILE_KEY = "qv_profile";
+function loadProfile() {
+  try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveProfile(profile) {
+  try { localStorage.setItem(PROFILE_KEY, JSON.stringify(profile)); } catch (e) { /* storage blocked */ }
+}
+
+/* ---------- Onboarding (3 steps) ---------- */
+function setUpOnboarding() {
+  const form = document.getElementById("onboarding-form");
+  if (!form) return;
+  const steps = Array.from(form.querySelectorAll(".onboard-step"));
+  const label = document.getElementById("step-label");
+  const fill = document.getElementById("progress-fill");
+  const back = document.getElementById("onboard-back");
+  const next = document.getElementById("onboard-next");
+  const saved = loadProfile();
+  let current = 1;
+
+  // Fill in anything already saved, so "Edit preferences" works too
+  if (saved.postcode) form.postcode.value = saved.postcode;
+  if (saved.area) form.area.value = saved.area;
+  if (saved.distance) form.querySelector(`[name=distance][value="${saved.distance}"]`).checked = true;
+  if (saved.role) form.querySelector(`[name=role][value="${saved.role}"]`).checked = true;
+  if (saved.mode) form.querySelector(`[name=mode][value="${saved.mode}"]`).checked = true;
+  (saved.skills || []).forEach((k) => {
+    const box = form.querySelector(`[name=skills][value="${k}"]`);
+    if (box) box.checked = true;
+  });
+
+  const role = () => (form.querySelector("[name=role]:checked") || {}).value;
+
+  function show(step, moveFocus = true) {
+    current = step;
+    steps.forEach((s) => s.classList.toggle("is-active", Number(s.dataset.step) === step));
+    label.textContent = `Step ${step} of 3`;
+    fill.style.width = `${(step / 3) * 100}%`;
+    back.hidden = step === 1;
+    next.textContent = step === 3 ? "Finish" : "Continue";
+    showError(form, null);
+
+    // Step 3 wording changes for people who only ask for help
+    if (step === 3) {
+      const askOnly = role() === "help_seeker";
+      form.querySelector("[data-step3-title]").textContent = askOnly
+        ? "What do you usually need help with?" : "What can you help with?";
+      form.querySelector("[data-step3-text]").textContent = askOnly
+        ? "This helps us suggest the right volunteers for your requests."
+        : "Pick your skills so we can show the best matched tasks first.";
+      form.querySelector("[data-skills-legend]").textContent = askOnly ? "Types of help" : "Your skills";
+    }
+    const heading = steps[step - 1].querySelector("h1");
+    if (heading && moveFocus) { heading.setAttribute("tabindex", "-1"); heading.focus(); }
+  }
+
+  function validate(step) {
+    if (step === 1) {
+      const ok = /^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$/.test(form.postcode.value.trim());
+      markInvalid(form.postcode, !ok);
+      const areaOk = form.area.value.trim().length > 1;
+      markInvalid(form.area, !areaOk);
+      if (!ok) return "Please enter a valid UK postcode, for example E8 1AB.";
+      if (!areaOk) return "Please enter your neighbourhood.";
+    }
+    if (step === 2 && !role()) return "Please choose how you would like to take part.";
+    if (step === 3 && !form.querySelector("[name=skills]:checked")) return "Please choose at least one option.";
+    return null;
+  }
+
+  back.addEventListener("click", () => show(current - 1));
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const problem = validate(current);
+    if (problem) { showError(form, problem); return; }
+    if (current < 3) { show(current + 1); return; }
+
+    saveProfile({
+      ...saved,
+      postcode: form.postcode.value.trim().toUpperCase(),
+      area: form.area.value.trim(),
+      distance: form.querySelector("[name=distance]:checked").value,
+      role: role(),
+      skills: Array.from(form.querySelectorAll("[name=skills]:checked")).map((b) => b.value),
+      mode: form.querySelector("[name=mode]:checked").value,
+    });
+    window.location.href = "dashboard.html";
+  });
+
+  show(1, false);
+}
+
+/* ---------- Dashboard that adapts to the chosen role ---------- */
+function setUpDashboard() {
+  const dash = document.querySelector(".dash");
+  if (!dash) return;
+  const profile = loadProfile();
+  const role = profile.role || "both";
+
+  if (profile.area) {
+    dash.querySelector("[data-area-label]").textContent =
+      `${profile.area} · ${profile.postcode || ""} · up to ${profile.distance || 3} miles`;
+  }
+  const text = {
+    help_seeker: "Post a small request and follow the offers from verified neighbours.",
+    volunteer: "Here are tasks near you that match your skills and your free time.",
+    both: "Switch between the help you give and the help you ask for.",
+  };
+  dash.querySelector("[data-role-text]").textContent = text[role];
+  if (profile.skills && profile.skills.length && role !== "help_seeker") {
+    dash.querySelector("[data-skills-text]").textContent =
+      `Matched to your skills: ${profile.skills.join(", ")}.`;
+  }
+
+  const panels = dash.querySelectorAll(".dash-panel");
+  const tabs = dash.querySelector(".dash-tabs");
+  const showPanel = (name) => {
+    panels.forEach((p) => { p.hidden = p.dataset.panel !== name; });
+    tabs.querySelectorAll(".dash-tab").forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+  };
+
+  if (role === "both") {
+    tabs.hidden = false;
+    tabs.querySelectorAll(".dash-tab").forEach((t) => t.addEventListener("click", () => showPanel(t.dataset.tab)));
+    showPanel("give");
+  } else {
+    showPanel(role === "help_seeker" ? "ask" : "give");
+  }
+}
+
+/* ---------- Name in the header, and log out ---------- */
+function setUpLogout() {
+  const profile = loadProfile();
+  if (profile.name) {
+    const first = profile.name.split(" ")[0];
+    document.querySelectorAll("[data-first-name]").forEach((el) => { el.textContent = first; });
+    document.querySelectorAll("[data-initial]").forEach((el) => { el.textContent = first.charAt(0).toUpperCase(); });
+  }
+  document.querySelectorAll("[data-logout]").forEach((a) => {
+    a.addEventListener("click", () => { try { localStorage.removeItem(PROFILE_KEY); } catch (e) {} });
+  });
+}
 
 /* ---------- Mobile menu ---------- */
 function setUpMobileMenu() {
@@ -115,7 +265,7 @@ function setUpLoginForm() {
     showError(form, null);
     // One login for everyone: Flask checks the account type and sends
     // users to Find a task and the administrator to the admin page.
-    window.location.href = "find-a-task.html";
+    window.location.href = "dashboard.html";
   });
 }
 
@@ -155,9 +305,10 @@ function setUpSignupForm() {
       return;
     }
     showError(form, null);
-    success.textContent = "Account created. Our team will verify it shortly.";
+    saveProfile({ name: name.value.trim(), email: email.value.trim() });
+    success.textContent = "Account created. Next, tell us about your area.";
     success.classList.add("is-visible");
-    form.reset();
+    setTimeout(() => { window.location.href = "onboarding.html"; }, 800);
   });
 }
 
