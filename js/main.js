@@ -2,6 +2,7 @@
 // Later, the forms will send their data to the Flask back end with fetch().
 
 document.addEventListener("DOMContentLoaded", () => {
+  setUpAuthHeader();
   setUpMobileMenu();
   setUpPasswordToggles();
   setUpSubscribeForm();
@@ -1078,4 +1079,13 @@ function setUpAskLinks() {
   }
   const note = document.querySelector("[data-ask-note]");
   if (note && new URLSearchParams(window.location.search).get("from") === "ask") note.hidden = false;
+}
+
+/* Public pages carry both header versions; show the logged in one when the visitor is logged in */
+function setUpAuthHeader() {
+  const p = loadProfile();
+  const inNow = !!(p.loggedIn || p.email || p.name);
+  document.querySelectorAll("[data-auth]").forEach((el) => {
+    el.hidden = (el.dataset.auth === "in") !== inNow;
+  });
 }
