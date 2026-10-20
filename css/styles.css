@@ -1479,3 +1479,12 @@ a.status:hover { text-decoration: underline; }
 /* Section right under the About and Impact tops is white, so the top stands apart */
 .about-top--stacked + .story-band { background: var(--white); }
 .about-top--stacked + .story-band .story-card { background: var(--cream); border-color: transparent; }
+
+/* Slimmer green call to action on About and Impact (desktop and iPad landscape) */
+@media (min-width: 961px) {
+  .story-cta { padding: 28px 48px; border-radius: 20px; }
+  .story-cta .story-heading { gap: 6px; }
+  .story-cta .story-heading h2 { font-size: 26px; }
+  .story-cta .story-muted { font-size: 16px; }
+  .story-cta__actions { flex-direction: row; align-items: center; gap: 24px; }
+}
