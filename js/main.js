@@ -656,7 +656,8 @@ function setUpPostRequest() {
   const editing = editId && DEMO_REQUESTS[editId];
   if (editing) {
     document.title = "Edit your request · QuickVolunteer";
-    form.querySelector("[data-post-eyebrow]").textContent = "My requests";
+    const eyebrow = form.querySelector("[data-post-eyebrow]");
+    if (eyebrow) eyebrow.textContent = "My requests";
     form.querySelector("[data-post-title]").textContent = "Edit your request";
     form.querySelector("[data-post-submit]").textContent = "Save changes";
     form.querySelector("#req-title").value = editing.title;

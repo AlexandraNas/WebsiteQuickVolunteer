@@ -1,6 +1,6 @@
 # QuickVolunteer website (front end)
 
-Plain HTML, CSS and JavaScript built from the QuickVolunteer Figma prototype. 
+Plain HTML, CSS and JavaScript built from the QuickVolunteer Figma prototype. No frameworks and no Jinja.
 The back end (Python Flask) and the MySQL database are built separately.
 
 ## How to open
