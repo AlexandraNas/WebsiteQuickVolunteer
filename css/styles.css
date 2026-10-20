@@ -1464,3 +1464,14 @@ a.status:hover { text-decoration: underline; }
 
 /* Filters: keep chips left aligned when the row stacks (tablet and phone) */
 @media (max-width: 960px) { .filters--panel .filter-row { align-items: stretch; } }
+
+/* About top: stacked like the reference (title, text, then a rounded photo) */
+.about-top--stacked { background: var(--cream); }
+.about-top__stack { padding-top: 56px; padding-bottom: 56px; }
+.about-top--stacked h1 { max-width: 760px; }
+.about-top--stacked .story-lead { max-width: 620px; margin-top: 18px; }
+.about-top--stacked .about-top__photo { height: 480px; margin-top: 36px; border-radius: 24px; overflow: hidden; }
+@media (max-width: 960px) {
+  .about-top__stack { padding-top: 32px; padding-bottom: 32px; }
+  .about-top--stacked .about-top__photo { height: clamp(200px, 50vw, 360px); margin-top: 24px; border-radius: 16px; }
+}
