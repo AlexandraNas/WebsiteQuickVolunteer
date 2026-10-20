@@ -1461,3 +1461,6 @@ a.status:hover { text-decoration: underline; }
   .about-top__grid { padding-top: 28px; padding-bottom: 28px; gap: 16px; }
   .about-top__text .story-lead { font-size: 17px; }
 }
+
+/* Filters: keep chips left aligned when the row stacks (tablet and phone) */
+@media (max-width: 960px) { .filters--panel .filter-row { align-items: stretch; } }
