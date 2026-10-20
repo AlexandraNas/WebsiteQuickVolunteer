@@ -982,7 +982,7 @@ a.status:hover { text-decoration: underline; }
    ========================================================= */
 .story-page {
   --s-green: var(--green); --s-ink: var(--text); --s-muted: var(--text-2);
-  --s-sand: #f5f3e9; --s-sage: #e4eddf; --s-cta: #e7eee2; --s-line: rgba(39, 81, 61, .12);
+  --s-sand: var(--cream); --s-sage: #e4eddf; --s-cta: #e7eee2; --s-line: rgba(39, 81, 61, .12);
   overflow: hidden;
 }
 .story-wrap { max-width: 1440px; margin: 0 auto; padding: 0 var(--page-pad); }
