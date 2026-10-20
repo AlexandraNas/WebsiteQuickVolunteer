@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setUpAdmin();
   setUpSimpleForms();
   setUpTables();
+  setUpConfirmations();
 });
 
 /* ---------- Saved profile (prototype only) ----------
@@ -398,6 +399,8 @@ function setUpTaskFilters() {
       if (visible) shown++;
     });
     if (count) count.textContent = shown;
+    const clear = document.getElementById("clear-filters");
+    if (clear) clear.hidden = active === "all" && !text && !(typeBox && typeBox.value) && !(lengthBox && lengthBox.value);
     empty.classList.toggle("is-visible", shown === 0);
   }
 
@@ -413,6 +416,15 @@ function setUpTaskFilters() {
   const typeBox = document.getElementById("task-type");
   const lengthBox = document.getElementById("task-duration");
   [typeBox, lengthBox].forEach((box) => { if (box) box.addEventListener("change", apply); });
+  // Clear filters: back to all tasks with nothing selected
+  document.querySelectorAll("#clear-filters, [data-clear-filters]").forEach((btn) => btn.addEventListener("click", () => {
+    active = "all";
+    chips.forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.filter === "all")));
+    search.value = "";
+    if (typeBox) typeBox.value = "";
+    if (lengthBox) lengthBox.value = "";
+    apply();
+  }));
   apply();
 }
 
@@ -720,7 +732,7 @@ function setUpOffers() {
 function setUpWithdraw() {
   document.querySelectorAll("[data-withdraw]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const row = btn.closest(".row-card");
+      const row = btn.closest(".row-card, .trow");
       const label = row.querySelector("[data-status-label]");
       label.textContent = "Withdrawn";
       label.className = "status status--closed";
@@ -754,6 +766,9 @@ function setUpReview() {
   }
   if (asSeeker) form.querySelector("[data-review-person]").textContent = "your volunteer";
   else if (task) form.querySelector("[data-review-person]").textContent = task.who;
+  // Both people must confirm (US-10). The other person is the volunteer or the requester.
+  const other = asSeeker ? "your volunteer" : (task ? task.who : "the other person");
+  form.querySelector("[data-review-other]").textContent = other;
 
   const yesNote = form.querySelector("[data-hours-note]");
   const noNote = form.querySelector("[data-no-note]");
@@ -772,9 +787,20 @@ function setUpReview() {
     const problem = checkRequired(form, [[happened !== "yes" || rated, "Please choose a star rating."]]);
     if (problem) { showError(form, problem); return; }
     const done = document.getElementById("review-done");
-    done.querySelector("[data-done-text]").textContent = happened === "yes"
-      ? "Your review has been posted and the hours have been added to the activity history."
-      : "Thanks for letting us know. The task has been marked as not completed and no hours were added.";
+    if (happened === "yes") {
+      // Prototype: remember this person's confirmation. Later: POST /api/tasks/<id>/confirm,
+      // and Flask marks the task Completed only when both confirmations are saved.
+      const taskId = params.get("task") || "2";
+      saveConfirmation(taskId, asSeeker ? "seeker" : "volunteer");
+      const minutes = task ? `${task.minutes} minutes` : "The task's time";
+      done.querySelector("[data-done-heading]").textContent = "Confirmation sent";
+      done.querySelector("[data-done-text]").textContent =
+        `Thank you. Your review is saved. We are now waiting for ${other} to confirm. ` +
+        `When you have both confirmed, the task is completed and ${minutes} are added to the volunteer's hours.`;
+    } else {
+      done.querySelector("[data-done-text]").textContent =
+        "Thanks for letting us know. The task has been marked as not completed and no hours were added.";
+    }
     form.hidden = true;
     done.hidden = false;
   });
@@ -939,5 +965,35 @@ function setUpTables() {
     table.querySelectorAll("tbody tr").forEach((tr) => {
       Array.from(tr.children).forEach((td, i) => { if (heads[i]) td.setAttribute("data-label", heads[i]); });
     });
+  });
+}
+
+/* Both people confirm a task (US-10). Prototype only: confirmations are kept in the browser.
+   Later: GET /api/me/tasks returns seeker_confirmed and volunteer_confirmed for each task. */
+const CONFIRM_KEY = "qv_confirmations";
+function loadConfirmations() {
+  try { return JSON.parse(localStorage.getItem(CONFIRM_KEY)) || {}; } catch (e) { return {}; }
+}
+function saveConfirmation(taskId, who) {
+  const all = loadConfirmations();
+  all[taskId] = Array.from(new Set([...(all[taskId] || []), who]));
+  try { localStorage.setItem(CONFIRM_KEY, JSON.stringify(all)); } catch (e) { /* storage blocked */ }
+}
+function setUpConfirmations() {
+  const all = loadConfirmations();
+  document.querySelectorAll("[data-confirm-task]").forEach((row) => {
+    const done = all[row.dataset.confirmTask] || [];
+    if (!done.length) return;
+    const label = row.querySelector("[data-status-label]");
+    const actions = row.querySelector(".trow__actions");
+    if (done.length >= 2) {
+      label.textContent = "Completed";
+      label.className = "status status--done";
+      if (actions) actions.innerHTML = "";
+    } else {
+      label.textContent = `Waiting for ${row.dataset.other || "the other person"} to confirm`;
+      label.className = "status status--pending";
+      if (actions) actions.innerHTML = '<span class="muted">You confirmed</span>';
+    }
   });
 }

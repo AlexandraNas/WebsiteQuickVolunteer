@@ -78,57 +78,65 @@
     </div>
   </div>
 
-  <main class="page">
-    <div class="page-head">
-      <div>
-        <p class="eyebrow">Giving help</p>
-        <h1 class="h-section">My tasks</h1>
-        <p class="body">Your upcoming tasks, the offers you are waiting on, and your volunteering history.</p>
+  <main class="tasks-page">
+    <section class="tasks-band">
+      <div class="tasks-wrap tasks-band__inner">
+        <div>
+          <p class="eyebrow">Giving help</p>
+          <h1 class="h-section">My tasks</h1>
+          <p class="body">Your upcoming tasks, the offers you are waiting on, and your volunteering history.</p>
+        </div>
+        <a class="btn btn--primary" href="find-a-task.html">Find a task <span aria-hidden="true">→</span></a>
       </div>
-      <a class="btn btn--primary" href="find-a-task.html">Find a task</a>
-    </div>
+    </section>
 
-    <section class="stack" aria-labelledby="up-title">
-      <h2 class="h-sub" id="up-title">Upcoming</h2>
-      <ul class="row-list">
-        <li class="row-card">
-          <div class="row-card__main">
+    <div class="tasks-wrap tasks-body">
+      <section class="tsec" aria-labelledby="up-title">
+        <div class="tsec__head"><h2 class="h-sub" id="up-title">Upcoming</h2><span class="count-pill">1</span></div>
+        <ul class="trow-list">
+        <li class="trow trow--green" data-confirm-task="2" data-other="Tom B.">
+          <div class="date-tile" aria-hidden="true"><span>Thu</span><strong>22</strong><span>Oct</span></div>
+          <div class="trow__main">
             <h3><a href="task.html?id=2">Weekly check-in call with an older resident</a></h3>
-            <p class="meta-line"><span>Thu 22 Oct, 15:00</span><span>By phone</span><span>20 min</span><span>Tom B.</span></p>
+            <p class="trow__meta"><span><img src="assets/icons/clock.svg" alt="" width="16" height="16">15:00 · 20 min</span><span><img src="assets/icons/phone.svg" alt="" width="16" height="16">By phone</span><span><img src="assets/icons/line-people.svg" alt="" width="16" height="16">Tom B.</span></p>
           </div>
-          <span class="status status--accepted">Accepted</span>
-          <div class="row-card__actions"><a class="btn btn--primary btn--small" href="review.html?task=2&amp;as=volunteer">Confirm completed</a></div>
+          <div class="trow__side"><span class="status status--accepted" data-status-label>Accepted</span><div class="trow__actions"><a class="btn btn--green btn--small" href="review.html?task=2&amp;as=volunteer">Confirm completed</a></div></div>
         </li>
-      </ul>
-    </section>
+        </ul>
+      </section>
 
-    <section class="stack" aria-labelledby="wait-title">
-      <h2 class="h-sub" id="wait-title">Waiting for a reply</h2>
-      <ul class="row-list">
-        <li class="row-card">
-          <div class="row-card__main">
+      <section class="tsec" aria-labelledby="wait-title">
+        <div class="tsec__head"><h2 class="h-sub" id="wait-title">Waiting for a reply</h2><span class="count-pill">1</span></div>
+        <ul class="trow-list">
+        <li class="trow trow--amber">
+          <div class="date-tile" aria-hidden="true"><span>By</span><strong>1</strong><span>Nov</span></div>
+          <div class="trow__main">
             <h3><a href="task.html?id=6">Translate a tenancy letter into Arabic</a></h3>
-            <p class="meta-line"><span>Before Sun 1 Nov</span><span>Online</span><span>15 min</span><span>Layla H.</span></p>
+            <p class="trow__meta"><span><img src="assets/icons/clock.svg" alt="" width="16" height="16">15 min</span><span><img src="assets/icons/laptop-meta.svg" alt="" width="16" height="16">Online</span><span><img src="assets/icons/line-people.svg" alt="" width="16" height="16">Layla H.</span></p>
           </div>
-          <span class="status status--pending" data-status-label>Offer sent</span>
-          <div class="row-card__actions"><button class="btn btn--outline btn--small" type="button" data-withdraw>Withdraw offer</button></div>
+          <div class="trow__side"><span class="status status--pending" data-status-label>Offer sent</span><div class="trow__actions"><button class="btn btn--outline btn--small" type="button" data-withdraw>Withdraw offer</button></div></div>
         </li>
-      </ul>
-    </section>
+        </ul>
+      </section>
 
-    <section class="stack" id="history" aria-labelledby="hist-title">
-      <div class="dash-section__head">
-        <h2 class="h-sub" id="hist-title">Hours and activity history</h2>
-        <p class="hours-total"><strong data-hours-total>0 min</strong> from <span data-hours-count>0</span> completed tasks</p>
-      </div>
-      <div class="empty-panel" data-history>
-        <img src="assets/icons/clock.svg" alt="" width="28" height="28">
-        <p><strong>No hours recorded yet</strong></p>
-        <p class="muted">When you and the other person confirm a task is completed, it appears here with its time and review.</p>
-        <a class="btn btn--primary btn--small" href="find-a-task.html">Find your first task</a>
-      </div>
-      <p class="muted small">Hours are added when both people confirm a task is completed. They use the task's planned duration.</p>
-    </section>
+      <section class="tsec" id="history" aria-labelledby="hist-title">
+        <div class="tsec__head"><h2 class="h-sub" id="hist-title">Hours and activity history</h2><span class="count-pill">0</span></div>
+        <div class="hours-grid">
+          <div class="hours-card">
+            <span class="hours-card__icon"><img src="assets/icons/line-clock.svg" alt="" width="24" height="24"></span>
+            <p class="hours-card__value"><strong data-hours-total>0 min</strong></p>
+            <p class="hours-card__label">volunteered from <span data-hours-count>0</span> completed tasks</p>
+            <p class="hours-card__note">Hours are added when both people confirm a task is completed, using the task's planned duration.</p>
+          </div>
+          <div class="empty-panel" data-history>
+            <img src="assets/icons/line-heart.svg" alt="" width="28" height="28">
+            <p><strong>Your first completed task will appear here</strong></p>
+            <p class="muted">Each finished task is listed with its date, time given and review.</p>
+            <a class="btn btn--primary btn--small" href="find-a-task.html">Find your first task</a>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
   <footer class="site-footer">
     <div class="footer-columns">

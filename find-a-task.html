@@ -63,7 +63,7 @@
       <h1>Small tasks, nearby or from home</h1>
       <p class="lead">Browse help requests from verified neighbours. Every task takes 15 to 60 minutes.</p>
     </div>
-    <div class="filters">
+    <div class="filters filters--panel">
       <label class="search-field"><img src="assets/icons/search-field.svg" alt="" width="20" height="20"><span class="sr-only">Search tasks</span><input type="search" id="task-search" placeholder="Search tasks"></label>
       <div class="filter-row">
         <div class="chips" role="group" aria-label="Help mode">
@@ -95,91 +95,103 @@
               <option value="60">Up to 60 min</option>
             </select>
           </label>
+          <button class="link-button clear-filters" type="button" id="clear-filters" hidden>Clear filters</button>
         </div>
       </div>
     </div>
     <div class="task-list" id="task-list">
         <article class="task-card" data-id="1" data-mode="in_person" data-minutes="45" data-match="false" data-skill="gardening">
+          
           <div class="task-card__top"><span class="tag tag--in-person"><img src="assets/icons/pin-tag.svg" alt="" width="14" height="14">In person</span><span class="time-badge"><img src="assets/icons/clock.svg" alt="" width="14" height="14">45 min</span></div>
-          <h2>Mow a small back garden lawn</h2>
-          <p class="task-card__by">Help request from Margaret O.</p>
+          <h2><a href="task.html?id=1">Mow a small back garden lawn</a></h2>
+          <div class="requester"><span class="avatar avatar--xs">M</span><span>Margaret O.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
             <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Sat 24 Oct, 10:00</p>
             <p class="meta"><img src="assets/icons/pin-meta.svg" alt="" width="16" height="16">Hackney, 0.8 miles away</p>
           </div>
           <div class="task-card__spacer"></div>
-          <a class="btn-view" href="task.html?id=1">View task</a>
-          <hr>
-          <a class="report" href="report.html?task=1"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report a concern</a>
+          <div class="task-card__foot">
+            <a class="report" href="report.html?task=1"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report</a>
+            <a class="btn-view" href="task.html?id=1">View task <span aria-hidden="true">→</span></a>
+          </div>
         </article>
         <article class="task-card" data-id="2" data-mode="remote" data-minutes="20" data-match="false" data-skill="befriending">
+          
           <div class="task-card__top"><span class="tag tag--remote"><img src="assets/icons/laptop-tag.svg" alt="" width="14" height="14">Remote</span><span class="time-badge"><img src="assets/icons/clock.svg" alt="" width="14" height="14">20 min</span></div>
-          <h2>Weekly check-in call with an older resident</h2>
-          <p class="task-card__by">Help request from Tom B.</p>
+          <h2><a href="task.html?id=2">Weekly check-in call with an older resident</a></h2>
+          <div class="requester"><span class="avatar avatar--xs">T</span><span>Tom B.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
             <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Weekday afternoons</p>
             <p class="meta"><img src="assets/icons/phone.svg" alt="" width="16" height="16">By phone</p>
           </div>
           <div class="task-card__spacer"></div>
-          <a class="btn-view" href="task.html?id=2">View task</a>
-          <hr>
-          <a class="report" href="report.html?task=2"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report a concern</a>
+          <div class="task-card__foot">
+            <a class="report" href="report.html?task=2"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report</a>
+            <a class="btn-view" href="task.html?id=2">View task <span aria-hidden="true">→</span></a>
+          </div>
         </article>
-        <article class="task-card" data-id="3" data-mode="in_person" data-minutes="30" data-match="true" data-skill="shopping">
+        <article class="task-card task-card--match" data-id="3" data-mode="in_person" data-minutes="30" data-match="true" data-skill="shopping">
+          <p class="match-ribbon"><img src="assets/icons/check.svg" alt="" width="16" height="16">Matches your skills</p>
           <div class="task-card__top"><span class="tag tag--in-person"><img src="assets/icons/pin-tag.svg" alt="" width="14" height="14">In person</span><span class="time-badge"><img src="assets/icons/clock.svg" alt="" width="14" height="14">30 min</span></div>
-          <h2>Collect a click and collect grocery order</h2>
-          <p class="task-card__by">Help request from Nadia R.</p>
-          <div class="safety"><span><img src="assets/icons/shield.svg" alt="" width="14" height="14">Verified</span><span><img src="assets/icons/shield.svg" alt="" width="14" height="14">Matches your skills</span></div>
+          <h2><a href="task.html?id=3">Collect a click and collect grocery order</a></h2>
+          <div class="requester"><span class="avatar avatar--xs">N</span><span>Nadia R.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
             <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Mon 26 Oct, 14:00</p>
             <p class="meta"><img src="assets/icons/pin-meta.svg" alt="" width="16" height="16">Dalston, 0.5 miles away</p>
           </div>
           <div class="task-card__spacer"></div>
-          <a class="btn-view" href="task.html?id=3">View task</a>
-          <hr>
-          <a class="report" href="report.html?task=3"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report a concern</a>
+          <div class="task-card__foot">
+            <a class="report" href="report.html?task=3"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report</a>
+            <a class="btn-view" href="task.html?id=3">View task <span aria-hidden="true">→</span></a>
+          </div>
         </article>
         <article class="task-card" data-id="4" data-mode="remote" data-minutes="30" data-match="false" data-skill="writing">
+          
           <div class="task-card__top"><span class="tag tag--remote"><img src="assets/icons/laptop-tag.svg" alt="" width="14" height="14">Remote</span><span class="time-badge"><img src="assets/icons/clock.svg" alt="" width="14" height="14">30 min</span></div>
-          <h2>Review a CV before a job application</h2>
-          <p class="task-card__by">Help request from Amira K.</p>
+          <h2><a href="task.html?id=4">Review a CV before a job application</a></h2>
+          <div class="requester"><span class="avatar avatar--xs">A</span><span>Amira K.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
             <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Before Fri 30 Oct</p>
             <p class="meta"><img src="assets/icons/laptop-meta.svg" alt="" width="16" height="16">Online</p>
           </div>
           <div class="task-card__spacer"></div>
-          <a class="btn-view" href="task.html?id=4">View task</a>
-          <hr>
-          <a class="report" href="report.html?task=4"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report a concern</a>
+          <div class="task-card__foot">
+            <a class="report" href="report.html?task=4"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report</a>
+            <a class="btn-view" href="task.html?id=4">View task <span aria-hidden="true">→</span></a>
+          </div>
         </article>
         <article class="task-card" data-id="5" data-mode="in_person" data-minutes="60" data-match="false" data-skill="repairs">
+          
           <div class="task-card__top"><span class="tag tag--in-person"><img src="assets/icons/pin-tag.svg" alt="" width="14" height="14">In person</span><span class="time-badge"><img src="assets/icons/clock.svg" alt="" width="14" height="14">60 min</span></div>
-          <h2>Help assemble a flat pack wardrobe</h2>
-          <p class="task-card__by">Help request from Joe P.</p>
+          <h2><a href="task.html?id=5">Help assemble a flat pack wardrobe</a></h2>
+          <div class="requester"><span class="avatar avatar--xs">J</span><span>Joe P.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
             <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Wed 28 Oct, 18:00</p>
             <p class="meta"><img src="assets/icons/pin-meta.svg" alt="" width="16" height="16">Hackney Wick, 1.2 miles away</p>
           </div>
           <div class="task-card__spacer"></div>
-          <a class="btn-view" href="task.html?id=5">View task</a>
-          <hr>
-          <a class="report" href="report.html?task=5"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report a concern</a>
+          <div class="task-card__foot">
+            <a class="report" href="report.html?task=5"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report</a>
+            <a class="btn-view" href="task.html?id=5">View task <span aria-hidden="true">→</span></a>
+          </div>
         </article>
         <article class="task-card" data-id="6" data-mode="remote" data-minutes="15" data-match="false" data-skill="translation">
+          
           <div class="task-card__top"><span class="tag tag--remote"><img src="assets/icons/laptop-tag.svg" alt="" width="14" height="14">Remote</span><span class="time-badge"><img src="assets/icons/clock.svg" alt="" width="14" height="14">15 min</span></div>
-          <h2>Translate a tenancy letter into Arabic</h2>
-          <p class="task-card__by">Help request from Layla H.</p>
+          <h2><a href="task.html?id=6">Translate a tenancy letter into Arabic</a></h2>
+          <div class="requester"><span class="avatar avatar--xs">L</span><span>Layla H.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
             <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Before Sun 1 Nov</p>
             <p class="meta"><img src="assets/icons/laptop-meta.svg" alt="" width="16" height="16">Online</p>
           </div>
           <div class="task-card__spacer"></div>
-          <a class="btn-view" href="task.html?id=6">View task</a>
-          <hr>
-          <a class="report" href="report.html?task=6"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report a concern</a>
+          <div class="task-card__foot">
+            <a class="report" href="report.html?task=6"><img src="assets/icons/flag.svg" alt="" width="14" height="14">Report</a>
+            <a class="btn-view" href="task.html?id=6">View task <span aria-hidden="true">→</span></a>
+          </div>
         </article>
     </div>
-    <p class="empty-state" id="empty-state">No tasks match these filters yet. Try another filter or search.</p>
+    <p class="empty-state" id="empty-state">No tasks match these filters yet. Try another filter, or <button class="link-button" type="button" data-clear-filters>clear all filters</button>.</p>
   </main>
   <footer class="site-footer">
     <div class="footer-columns">

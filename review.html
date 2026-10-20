@@ -89,7 +89,7 @@
         <legend>Did the task happen?</legend>
         <div class="chips"><label class="choice-chip"><input type="radio" name="happened" value="yes"><span>Yes, it is completed</span></label><label class="choice-chip"><input type="radio" name="happened" value="no"><span>No, it did not happen</span></label></div>
       </fieldset>
-      <p class="info-box" data-hours-note><img src="assets/icons/clock.svg" alt="" width="18" height="18"><span><strong data-review-minutes>20 minutes</strong> will be added to the volunteer's hours and activity history.</span></p>
+      <p class="info-box" data-hours-note><img src="assets/icons/clock.svg" alt="" width="18" height="18"><span>You both confirm the task. Once <strong data-review-other>the other person</strong> confirms too, <strong data-review-minutes>20 minutes</strong> will be added to the volunteer's hours and activity history.</span></p>
       <p class="info-box info-box--warn" data-no-note hidden><img src="assets/icons/alert.svg" alt="" width="18" height="18"><span>Sorry to hear that. No hours will be added. <a class="link-green" href="report.html?task=2">Report a problem</a> if you need our team.</span></p>
       <div class="stack" data-review-fields>
         <fieldset class="choice-group">
@@ -107,7 +107,7 @@
     </form>
     <div class="form-card form-card--narrow form-done" id="review-done" role="status" hidden>
       <span class="big-check"><img src="assets/icons/check.svg" alt="" width="28" height="28"></span>
-      <h1 class="h-section">Thank you</h1>
+      <h1 class="h-section" data-done-heading>Thank you</h1>
       <p class="body" data-done-text>Your review has been posted and the hours have been added.</p>
       <a class="btn btn--primary btn--block" href="dashboard.html">Back to my dashboard</a>
     </div>
