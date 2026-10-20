@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setUpSimpleForms();
   setUpTables();
   setUpConfirmations();
+  setUpAskLinks();
 });
 
 /* ---------- Saved profile (prototype only) ----------
@@ -318,7 +319,12 @@ function setUpLoginForm() {
     // members to their dashboard and the administrator to the admin page.
     // Prototype only: an email starting with "admin" opens the admin page.
     const isAdmin = email.value.trim().toLowerCase().startsWith("admin");
-    window.location.href = isAdmin ? "admin.html" : "dashboard.html";
+    // Remember that someone is logged in (prototype only; Flask will use a session cookie)
+    if (!isAdmin) saveProfile({ ...loadProfile(), email: email.value.trim(), loggedIn: true });
+    // Go back to the page they came from, for example Post a help request
+    const next = new URLSearchParams(window.location.search).get("next");
+    const safeNext = next && /^[a-z-]+\.html$/.test(next) ? next : null;
+    window.location.href = isAdmin ? "admin.html" : (safeNext || "dashboard.html");
   });
 }
 
@@ -1058,4 +1064,18 @@ function markMatches() {
       .sort((a, b) => (b.dataset.match === "true") - (a.dataset.match === "true"))
       .forEach((card) => list.appendChild(card));
   });
+}
+
+/* Ask for Help: logged-in members go straight to Post a help request; visitors go to Sign up
+   with a short explanation. Later: Flask knows who is logged in and sends the right link. */
+function isLoggedIn() {
+  const p = loadProfile();
+  return !!(p.loggedIn || p.email || p.name);
+}
+function setUpAskLinks() {
+  if (isLoggedIn()) {
+    document.querySelectorAll('a[href="signup.html?from=ask"]').forEach((a) => { a.href = "post-request.html"; });
+  }
+  const note = document.querySelector("[data-ask-note]");
+  if (note && new URLSearchParams(window.location.search).get("from") === "ask") note.hidden = false;
 }
