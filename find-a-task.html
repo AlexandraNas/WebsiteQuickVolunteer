@@ -70,7 +70,7 @@
           <button class="chip" type="button" data-filter="all" aria-pressed="true">All tasks</button>
           <button class="chip" type="button" data-filter="in_person" aria-pressed="false"><img src="assets/icons/pin.svg" alt="" width="16" height="16">In person</button>
           <button class="chip" type="button" data-filter="remote" aria-pressed="false"><img src="assets/icons/laptop.svg" alt="" width="16" height="16">Remote</button>
-          <button class="chip" type="button" data-filter="match" aria-pressed="false">Matches my skills</button>
+          <button class="chip" type="button" data-filter="match" aria-pressed="false" data-needs-skills hidden>Matches my skills</button>
         </div>
         <div class="filter-selects">
           <label class="filter-select"><span>Type of help</span>
@@ -106,7 +106,7 @@
           <h2><a href="task.html?id=1">Mow a small back garden lawn</a></h2>
           <div class="requester"><span class="avatar avatar--xs">M</span><span>Margaret O.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
-            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Sat 24 Oct, 10:00</p>
+            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Complete by Sat 24 Oct</p>
             <p class="meta"><img src="assets/icons/pin-meta.svg" alt="" width="16" height="16">Hackney, 0.8 miles away</p>
           </div>
           <div class="task-card__spacer"></div>
@@ -121,7 +121,7 @@
           <h2><a href="task.html?id=2">Weekly check-in call with an older resident</a></h2>
           <div class="requester"><span class="avatar avatar--xs">T</span><span>Tom B.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
-            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Weekday afternoons</p>
+            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Complete by Fri 30 Oct</p>
             <p class="meta"><img src="assets/icons/phone.svg" alt="" width="16" height="16">By phone</p>
           </div>
           <div class="task-card__spacer"></div>
@@ -130,13 +130,13 @@
             <a class="btn-view" href="task.html?id=2">View task <span aria-hidden="true">→</span></a>
           </div>
         </article>
-        <article class="task-card task-card--match" data-id="3" data-mode="in_person" data-minutes="30" data-match="true" data-skill="shopping">
-          <p class="match-ribbon"><img src="assets/icons/check.svg" alt="" width="16" height="16">Matches your skills</p>
+        <article class="task-card" data-id="3" data-mode="in_person" data-minutes="30" data-match="false" data-skill="shopping">
+          
           <div class="task-card__top"><span class="tag tag--in-person"><img src="assets/icons/pin-tag.svg" alt="" width="14" height="14">In person</span><span class="time-badge"><img src="assets/icons/clock.svg" alt="" width="14" height="14">30 min</span></div>
           <h2><a href="task.html?id=3">Collect a click and collect grocery order</a></h2>
           <div class="requester"><span class="avatar avatar--xs">N</span><span>Nadia R.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
-            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Mon 26 Oct, 14:00</p>
+            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Complete by Mon 26 Oct</p>
             <p class="meta"><img src="assets/icons/pin-meta.svg" alt="" width="16" height="16">Dalston, 0.5 miles away</p>
           </div>
           <div class="task-card__spacer"></div>
@@ -151,7 +151,7 @@
           <h2><a href="task.html?id=4">Review a CV before a job application</a></h2>
           <div class="requester"><span class="avatar avatar--xs">A</span><span>Amira K.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
-            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Before Fri 30 Oct</p>
+            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Complete by Fri 30 Oct</p>
             <p class="meta"><img src="assets/icons/laptop-meta.svg" alt="" width="16" height="16">Online</p>
           </div>
           <div class="task-card__spacer"></div>
@@ -166,7 +166,7 @@
           <h2><a href="task.html?id=5">Help assemble a flat pack wardrobe</a></h2>
           <div class="requester"><span class="avatar avatar--xs">J</span><span>Joe P.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
-            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Wed 28 Oct, 18:00</p>
+            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Complete by Wed 28 Oct</p>
             <p class="meta"><img src="assets/icons/pin-meta.svg" alt="" width="16" height="16">Hackney Wick, 1.2 miles away</p>
           </div>
           <div class="task-card__spacer"></div>
@@ -181,7 +181,7 @@
           <h2><a href="task.html?id=6">Translate a tenancy letter into Arabic</a></h2>
           <div class="requester"><span class="avatar avatar--xs">L</span><span>Layla H.</span><span class="verified-dot" title="Verified member"><img src="assets/icons/shield.svg" alt="" width="13" height="13">Verified</span></div>
           <div class="task-card__meta">
-            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Before Sun 1 Nov</p>
+            <p class="meta"><img src="assets/icons/cal.svg" alt="" width="16" height="16">Complete by Sun 1 Nov</p>
             <p class="meta"><img src="assets/icons/laptop-meta.svg" alt="" width="16" height="16">Online</p>
           </div>
           <div class="task-card__spacer"></div>

@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setUpSubscribeForm();
   setUpLoginForm();
   setUpSignupForm();
+  markMatches();
   setUpTaskFilters();
   setUpReportLinks();
   setUpOnboarding();
@@ -174,9 +175,12 @@ function setUpDashboard() {
     both: "Switch between the help you give and the help you ask for.",
   };
   dash.querySelector("[data-role-text]").textContent = text[role];
-  if (profile.skills && profile.skills.length && role !== "help_seeker") {
-    dash.querySelector("[data-skills-text]").textContent =
-      `Matched to your skills: ${profile.skills.join(", ")}.`;
+  const skillsBox = dash.querySelector("[data-skills-text]");
+  if (hasSkills(profile)) {
+    dash.querySelector("[data-matches-title]").textContent = "Best matches for you";
+    skillsBox.textContent = `Tasks that match your skills come first: ${profile.skills.join(", ")}.`;
+  } else {
+    skillsBox.innerHTML = 'Open tasks near you. <a class="link-green" href="profile.html">Add your skills</a> to see the tasks that match you first.';
   }
 
   const panels = dash.querySelectorAll(".dash-panel");
@@ -324,18 +328,41 @@ function setUpSignupForm() {
   if (!form) return;
   const success = form.querySelector(".form-success");
 
+  // Live checks: password length and whether the two passwords match
+  const pw = form.querySelector("#password");
+  const pw2 = form.querySelector("#confirm");
+  const hint = document.getElementById("pw-hint");
+  const matchNote = document.getElementById("pw-match");
+  const liveCheck = () => {
+    const left = 12 - pw.value.length;
+    hint.textContent = pw.value.length === 0 ? "At least 12 characters."
+      : left > 0 ? `At least 12 characters (${left} more to go).` : "Password length is fine.";
+    hint.classList.toggle("is-ok", left <= 0);
+    if (!pw2.value) { matchNote.hidden = true; return; }
+    const same = pw.value === pw2.value;
+    matchNote.hidden = false;
+    matchNote.textContent = same ? "Passwords match." : "Passwords do not match yet.";
+    matchNote.classList.toggle("is-ok", same);
+    if (same) { markInvalid(pw2, false); showError(form, null); }
+    if (left <= 0) markInvalid(pw, false);
+  };
+  pw.addEventListener("input", liveCheck);
+  pw2.addEventListener("input", liveCheck);
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const name = form.querySelector("#fullname");
+    const first = form.querySelector("#firstname");
+    const last = form.querySelector("#lastname");
     const email = form.querySelector("#email");
     const password = form.querySelector("#password");
     const confirm = form.querySelector("#confirm");
     const terms = form.querySelector("#terms");
 
     const checks = [
-      [name, name.value.trim().length >= 2, "Please enter your full name."],
+      [first, first.value.trim().length >= 1, "Please enter your first name."],
+      [last, last.value.trim().length >= 1, "Please enter your last name."],
       [email, isEmail(email.value), "Please enter a valid email address."],
-      [password, password.value.length >= 8, "Your password needs at least 8 characters."],
+      [password, password.value.length >= 12, "Your password needs at least 12 characters."],
       [confirm, confirm.value === password.value && confirm.value !== "", "The passwords do not match."],
     ];
 
@@ -354,7 +381,8 @@ function setUpSignupForm() {
       return;
     }
     showError(form, null);
-    saveProfile({ name: name.value.trim(), email: email.value.trim() });
+    saveProfile({ firstName: first.value.trim(), lastName: last.value.trim(),
+      name: `${first.value.trim()} ${last.value.trim()}`, email: email.value.trim() });
     success.textContent = "Account created. Next, tell us about your area.";
     success.classList.add("is-visible");
     setTimeout(() => { window.location.href = "onboarding.html"; }, 800);
@@ -375,7 +403,7 @@ function setUpTaskFilters() {
   const params = new URLSearchParams(window.location.search);
   if (params.get("q")) search.value = params.get("q");
 
-  // Best match first: matched tasks go to the top
+  // Best match first, but only when the user has skills saved (see markMatches)
   cards
     .sort((a, b) => (b.dataset.match === "true") - (a.dataset.match === "true"))
     .forEach((card) => list.appendChild(card));
@@ -477,17 +505,17 @@ function setUpNotifications() {
 
 /* Demo tasks. Later: fetch(`/api/tasks/${id}`) returns the same fields. */
 const DEMO_TASKS = {
-  1: { title: "Mow a small back garden lawn", who: "Margaret O.", mode: "in_person", minutes: 45, when: "Sat 24 Oct, 10:00", where: "Hackney, 0.8 miles away", rating: "Joined October 2026", skills: ["Gardening"],
+  1: { title: "Mow a small back garden lawn", who: "Margaret O.", mode: "in_person", minutes: 45, when: "Sat 24 Oct", where: "Hackney, 0.8 miles away", rating: "Joined October 2026", skills: ["Gardening"],
        description: "My back lawn is small but has grown too long for me to manage since my knee operation. The electric mower, extension lead and grass box are in the shed. It would also help to trim the edges if there is time." },
-  2: { title: "Weekly check-in call with an older resident", who: "Tom B.", mode: "remote", minutes: 20, when: "Weekday afternoons", where: "By phone", rating: "Joined October 2026", skills: ["Phone calls"],
+  2: { title: "Weekly check-in call with an older resident", who: "Tom B.", mode: "remote", minutes: 20, when: "Fri 30 Oct", where: "By phone", rating: "Joined October 2026", skills: ["Phone calls"],
        description: "I am 82 and live on my own. A regular call once a week to chat would make a real difference to me. Any weekday after 14:00 suits me best." },
-  3: { title: "Collect a click and collect grocery order", who: "Nadia R.", mode: "in_person", minutes: 30, when: "Mon 26 Oct, 14:00", where: "Dalston, 0.5 miles away", rating: "Joined October 2026", skills: ["Shopping"],
+  3: { title: "Collect a click and collect grocery order", who: "Nadia R.", mode: "in_person", minutes: 30, when: "Mon 26 Oct", where: "Dalston, 0.5 miles away", rating: "Joined October 2026", skills: ["Shopping"],
        description: "My order is already paid for and ready to collect from the supermarket on the high street. I need it brought to my flat on the second floor, as I cannot carry heavy bags at the moment. There are three bags." },
-  4: { title: "Review a CV before a job application", who: "Amira K.", mode: "remote", minutes: 30, when: "Before Fri 30 Oct", where: "Online", rating: "Joined October 2026", skills: ["Writing and forms"],
+  4: { title: "Review a CV before a job application", who: "Amira K.", mode: "remote", minutes: 30, when: "Fri 30 Oct", where: "Online", rating: "Joined October 2026", skills: ["Writing and forms"],
        description: "I am returning to work after five years and applying for an administrative role. I would like someone to review my two page CV and suggest how to present my experience more clearly. I can share it by email or video call." },
-  5: { title: "Help assemble a flat pack wardrobe", who: "Joe P.", mode: "in_person", minutes: 60, when: "Wed 28 Oct, 18:00", where: "Hackney Wick, 1.2 miles away", rating: "Joined October 2026", skills: ["Small repairs"],
+  5: { title: "Help assemble a flat pack wardrobe", who: "Joe P.", mode: "in_person", minutes: 60, when: "Wed 28 Oct", where: "Hackney Wick, 1.2 miles away", rating: "Joined October 2026", skills: ["Small repairs"],
        description: "I have a two door wardrobe with the instructions and all the tools. Some panels need two people to lift and hold in place, so I need a second pair of hands." },
-  6: { title: "Translate a tenancy letter into Arabic", who: "Layla H.", mode: "remote", minutes: 15, when: "Before Sun 1 Nov", where: "Online", rating: "Joined October 2026", skills: ["Translation"],
+  6: { title: "Translate a tenancy letter into Arabic", who: "Layla H.", mode: "remote", minutes: 15, when: "Sun 1 Nov", where: "Online", rating: "Joined October 2026", skills: ["Translation"],
        description: "My landlord has sent a two page letter about changes to my tenancy. I would like it translated into Arabic so my parents, who live with me, can understand it. I can share a photo of the letter." },
 };
 
@@ -577,10 +605,9 @@ function setUpTaskDetail() {
     skillBox.appendChild(tag);
   });
   const matched = task.skills.filter((s) => mySkills.includes(s));
-  if (matched.length || id === "3") {
+  if (matched.length) {
     page.querySelector("[data-task-match]").hidden = false;
-    page.querySelector("[data-task-match-text]").textContent = matched.length
-      ? `It matches your skills: ${matched.join(", ")}.` : "It matches your skills and is close to you.";
+    page.querySelector("[data-task-match-text]").textContent = `It matches your skills: ${matched.join(", ")}.`;
   }
 
   const form = document.getElementById("offer-form");
@@ -604,31 +631,26 @@ function setUpPostRequest() {
   if (!form) return;
   const profile = loadProfile();
   const inPerson = form.querySelector("[data-in-person-only]");
-  const date = form.querySelector("#req-date");
-  const flexible = form.querySelector("#req-flexible");
+  // Deadline: the latest date the task should be done by (cannot be in the past).
+  // The date the request is created is saved by the server, not typed by the user.
+  const date = form.querySelector("#req-deadline");
   if (profile.postcode) form.querySelector("#req-postcode").value = profile.postcode;
   date.min = new Date().toISOString().slice(0, 10);
 
   form.querySelectorAll("[name=req-mode]").forEach((r) => r.addEventListener("change", () => {
     inPerson.hidden = r.value !== "in_person";
   }));
-  flexible.addEventListener("change", () => {
-    date.required = !flexible.checked;
-    date.disabled = flexible.checked;
-    form.querySelector("#req-time").disabled = flexible.checked;
-    if (flexible.checked) markInvalid(date, false);
-  });
 
   // Edit an existing request (US-09): post-request.html?edit=1
   // Later: GET /api/tasks/<id> to fill the form and PUT /api/tasks/<id> to save it.
   const editId = new URLSearchParams(window.location.search).get("edit");
   const DEMO_REQUESTS = {
     1: { title: "Collect a click and collect grocery order", category: "shopping", skills: ["Shopping"], duration: "30", mode: "in_person",
-         postcode: "E8 2AA", date: "2026-10-29", time: "16:00",
+         postcode: "E8 2AA", deadline: "2026-10-29",
          description: "My grocery order is paid for and ready to collect from the supermarket on Kingsland High Street between 16:00 and 17:00. I need it brought to my flat on the second floor, as I cannot carry heavy bags at the moment. There are four bags in total." },
-    2: { title: "Set up video calling on a new tablet", category: "tech", skills: ["Tech help"], duration: "30", mode: "remote", date: "2026-10-23", time: "11:00",
+    2: { title: "Set up video calling on a new tablet", category: "tech", skills: ["Tech help"], duration: "30", mode: "remote", deadline: "2026-10-23",
          description: "I have a new tablet and would like help setting up video calls so I can talk to my grandchildren. I can share my screen or talk you through it by phone." },
-    3: { title: "Explain a council tax letter and next steps", category: "writing", skills: ["Writing and forms"], duration: "30", mode: "remote", flexible: true,
+    3: { title: "Explain a council tax letter and next steps", category: "writing", skills: ["Writing and forms"], duration: "30", mode: "remote", deadline: "2026-10-30",
          description: "I received a council tax letter about a change to my discount and I am not sure what I need to do. I would like someone to read it with me by phone and explain the next steps." },
   };
   const editing = editId && DEMO_REQUESTS[editId];
@@ -646,8 +668,7 @@ function setUpPostRequest() {
     modeBox.checked = true;
     inPerson.hidden = editing.mode !== "in_person";
     if (editing.postcode) form.querySelector("#req-postcode").value = editing.postcode;
-    if (editing.flexible) { flexible.checked = true; flexible.dispatchEvent(new Event("change")); }
-    else { date.min = ""; date.value = editing.date; form.querySelector("#req-time").value = editing.time || ""; }
+    date.value = editing.deadline;
     form.querySelector("#req-confirm").checked = true;
     form.querySelectorAll("[data-counter-for]").forEach((c) => {
       const box = document.getElementById(c.dataset.counterFor); c.textContent = `${box.value.length} / ${box.maxLength}`;
@@ -818,7 +839,10 @@ function setUpProfile() {
     document.querySelector("[data-profile-area]").textContent = p.area ? `${p.area}, up to ${p.distance || 3} miles` : "Not set";
     document.querySelector("[data-profile-role]").textContent = roleNames[p.role] || "Not set";
   };
-  if (profile.name) form.fullname.value = profile.name;
+  // First and last name (older saved profiles only have one name, so split it once)
+  const parts = (profile.name || "").trim().split(/\s+/);
+  form.firstname.value = profile.firstName || (parts[0] || "");
+  form.lastname.value = profile.lastName || parts.slice(1).join(" ");
   if (profile.email) form.email.value = profile.email;
   if (profile.bio) form.bio.value = profile.bio;
   if (profile.postcode) form.postcode.value = profile.postcode;
@@ -851,7 +875,9 @@ function setUpProfile() {
     const role = form.querySelector("[name=role]:checked").value;
     saveProfile({
       ...loadProfile(),
-      name: form.fullname.value.trim(),
+      firstName: form.firstname.value.trim(),
+      lastName: form.lastname.value.trim(),
+      name: `${form.firstname.value.trim()} ${form.lastname.value.trim()}`,
       email: form.email.value.trim(),
       bio: form.bio.value.trim(),
       postcode: form.postcode.value.trim().toUpperCase(),
@@ -995,5 +1021,40 @@ function setUpConfirmations() {
       label.className = "status status--pending";
       if (actions) actions.innerHTML = '<span class="muted">You confirmed</span>';
     }
+  });
+}
+
+/* Skills matching (US-13). A task matches when its type of help is one of the user's skills.
+   Only shown when the user has chosen skills; if they skipped, tasks are listed normally.
+   Later: Flask returns a "matches" flag for each task from the user's saved skills. */
+const SKILL_FOR_TYPE = {
+  shopping: "Shopping", gardening: "Gardening", befriending: "Phone calls", tech: "Tech help",
+  translation: "Translation", writing: "Writing and forms", moving: "Moving and packing", repairs: "Small repairs",
+};
+function hasSkills(profile) {
+  return profile.role !== "help_seeker" && Array.isArray(profile.skills) && profile.skills.length > 0;
+}
+function markMatches() {
+  const profile = loadProfile();
+  const on = hasSkills(profile);
+  document.querySelectorAll("[data-needs-skills]").forEach((el) => { el.hidden = !on; });
+  document.querySelectorAll(".task-card").forEach((card) => {
+    const match = on && profile.skills.includes(SKILL_FOR_TYPE[card.dataset.skill]);
+    card.dataset.match = String(match);
+    card.classList.toggle("task-card--match", match);
+    const old = card.querySelector(".match-ribbon");
+    if (old) old.remove();
+    if (match) {
+      const ribbon = document.createElement("p");
+      ribbon.className = "match-ribbon";
+      ribbon.innerHTML = '<img src="assets/icons/check.svg" alt="" width="16" height="16">Matches your skills';
+      card.prepend(ribbon);
+    }
+  });
+  // Dashboard lists: put matching tasks first
+  document.querySelectorAll(".dash .task-list").forEach((list) => {
+    Array.from(list.querySelectorAll(".task-card"))
+      .sort((a, b) => (b.dataset.match === "true") - (a.dataset.match === "true"))
+      .forEach((card) => list.appendChild(card));
   });
 }
