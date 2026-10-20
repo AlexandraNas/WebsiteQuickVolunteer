@@ -1475,3 +1475,7 @@ a.status:hover { text-decoration: underline; }
   .about-top__stack { padding-top: 32px; padding-bottom: 32px; }
   .about-top--stacked .about-top__photo { height: clamp(200px, 50vw, 360px); margin-top: 24px; border-radius: 16px; }
 }
+
+/* Section right under the About and Impact tops is white, so the top stands apart */
+.about-top--stacked + .story-band { background: var(--white); }
+.about-top--stacked + .story-band .story-card { background: var(--cream); border-color: transparent; }
