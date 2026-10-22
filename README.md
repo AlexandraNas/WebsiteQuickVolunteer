@@ -2,7 +2,7 @@
 
 QuickVolunteer connects neighbours who need a little help with people who have a little time to give. Every task takes 15 to 60 minutes and can be done in person or from home.
 
-This repository is the front end only: plain HTML, CSS and JavaScript, with no frameworks and no Jinja. The back end (Python Flask) and the MySQL database are built separately.
+This repository is the front end only: plain HTML, CSS and JavaScript. The back end (Python Flask) and the MySQL database are built separately.
 
 Live site: https://alexandranas.github.io/WebsiteQuickVolunteer/
 
@@ -46,9 +46,3 @@ Open `index.html` in a browser, or use the Live Server extension in VS Code. Aft
 - `js/main.js` all behaviour
 - `assets/icons/` icons and logo
 - `assets/images/` photos
-
-## Notes for the back end
-- The pages use demo data. In `js/main.js`, `DEMO_TASKS`, `DEMO_REQUESTS` and the `localStorage` keys `qv_profile` (the member) and `qv_confirmations` (who has confirmed each task) stand in for the API.
-- Each function in `main.js` has a comment naming the request that should replace it, for example `POST /api/tasks`, `POST /api/offers/<id>/accept`, `POST /api/reports`, `PATCH /api/reviews/<id>`.
-- Task suggestions based on skills will be finished once the front end is connected to the back end.
-- Forms only check input in the browser; Flask must validate everything again on the server.
