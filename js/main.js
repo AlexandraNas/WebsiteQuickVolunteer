@@ -101,7 +101,8 @@ function setUpOnboarding() {
 
   // Skip for now: keep what was typed (if valid) and go to the dashboard
   document.getElementById("onboard-skip").addEventListener("click", () => {
-    const profile = { ...saved, skipped: !saved.role };
+    // Skipping onboarding: anyone without a chosen account type is set to "both"
+    const profile = { ...saved, role: saved.role || "both", skipped: !saved.role };
     if (!validate(1)) {
       profile.postcode = form.postcode.value.trim().toUpperCase();
       profile.area = form.area.value.trim();
@@ -967,6 +968,21 @@ function setUpAdmin() {
       });
     });
     card.querySelector("[data-dismiss]").addEventListener("click", () => finish("Dismissed", "closed"));
+  });
+  // Reviews: hide a review from the member's profile, or restore it. Later: PATCH /api/reviews/:id {hidden}
+  const countHidden = admin.querySelector("[data-count-hidden]");
+  admin.querySelectorAll("[data-review-card]").forEach((card) => {
+    const hideBtn = card.querySelector("[data-hide-review]");
+    const restoreBtn = card.querySelector("[data-restore-review]");
+    const set = (hidden) => {
+      setStatus(card, hidden ? "Hidden" : "Visible", hidden ? "declined" : "accepted");
+      card.classList.toggle("is-hidden-review", hidden);
+      hideBtn.hidden = hidden;
+      restoreBtn.hidden = !hidden;
+      if (countHidden) countHidden.textContent = admin.querySelectorAll(".is-hidden-review").length;
+    };
+    hideBtn.addEventListener("click", () => set(true));
+    restoreBtn.addEventListener("click", () => set(false));
   });
 }
 

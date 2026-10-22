@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin · QuickVolunteer</title>
-  <meta name="description" content="Verify accounts and review reported concerns.">
+  <meta name="description" content="Verify accounts, review reported concerns and moderate reviews.">
   <link rel="icon" href="assets/icons/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,16 +82,18 @@
     <div class="page-head">
       <div>
         <h1 class="h-section">Admin dashboard</h1>
-        <p class="body">Verify new accounts and review concerns reported by members.</p>
+        <p class="body">Verify new accounts, review concerns reported by members and moderate reviews.</p>
       </div>
     </div>
     <div class="admin-summary">
       <p><strong data-count-accounts>3</strong> accounts to verify</p>
       <p><strong data-count-concerns>2</strong> open concerns</p>
+      <p><strong data-count-hidden>0</strong> hidden reviews</p>
     </div>
     <div class="dash-tabs" role="tablist" aria-label="Admin sections">
       <button class="dash-tab" role="tab" type="button" data-tab="accounts" aria-selected="true">Accounts to verify</button>
       <button class="dash-tab" role="tab" type="button" data-tab="concerns" aria-selected="false">Reported concerns</button>
+      <button class="dash-tab" role="tab" type="button" data-tab="reviews" aria-selected="false">Reviews</button>
     </div>
     <section class="dash-panel" data-panel="accounts" aria-label="Accounts to verify">
       <div class="table-wrap">
@@ -133,6 +135,41 @@
               <button class="btn btn--outline btn--small" type="button" data-resolve>Mark as reviewed</button>
               <button class="btn btn--primary btn--small" type="button" data-suspend>Suspend Marcus T.</button>
               <button class="link-button" type="button" data-dismiss>Dismiss</button>
+            </div>
+          </article>
+      </div>
+    </section>
+    <section class="dash-panel" data-panel="reviews" aria-label="Reviews" hidden>
+      <p class="body muted">Hide a review that breaks the community guidelines. Hidden reviews no longer show on the member's profile and can be restored at any time.</p>
+      <div class="concern-list">
+          <article class="concern-card" data-review-card>
+            <div class="concern-card__head"><p class="muted small">20 Oct 2026</p><span class="status status--accepted" data-status-label>Visible</span></div>
+            <h3>Collect a click and collect grocery order</h3>
+            <p class="muted"><strong>Sophie W.</strong> reviewed <strong>Nadia R.</strong> · <span class="review-stars" aria-label="5 out of 5 stars">★★★★★</span></p>
+            <p class="quote">“Arrived on time and carried the bags all the way up. Very kind and easy to arrange.”</p>
+            <div class="inline-actions">
+              <button class="btn btn--outline btn--small" type="button" data-hide-review>Hide review</button>
+              <button class="btn btn--primary btn--small" type="button" data-restore-review hidden>Restore review</button>
+            </div>
+          </article>
+          <article class="concern-card" data-review-card>
+            <div class="concern-card__head"><p class="muted small">20 Oct 2026</p><span class="status status--accepted" data-status-label>Visible</span></div>
+            <h3>Weekly check-in call with an older resident</h3>
+            <p class="muted"><strong>Tom B.</strong> reviewed <strong>Adam F.</strong> · <span class="review-stars" aria-label="4 out of 5 stars">★★★★☆</span></p>
+            <p class="quote">“A friendly call and a good chat. We have already agreed the next one.”</p>
+            <div class="inline-actions">
+              <button class="btn btn--outline btn--small" type="button" data-hide-review>Hide review</button>
+              <button class="btn btn--primary btn--small" type="button" data-restore-review hidden>Restore review</button>
+            </div>
+          </article>
+          <article class="concern-card" data-review-card>
+            <div class="concern-card__head"><p class="muted small">21 Oct 2026</p><span class="status status--accepted" data-status-label>Visible</span></div>
+            <h3>Help assemble a flat pack wardrobe</h3>
+            <p class="muted"><strong>Joe P.</strong> reviewed <strong>Marcus T.</strong> · <span class="review-stars" aria-label="1 out of 5 stars">★☆☆☆☆</span></p>
+            <p class="quote">“Rude and useless, would never use this person again. Total waste of time.”</p>
+            <div class="inline-actions">
+              <button class="btn btn--outline btn--small" type="button" data-hide-review>Hide review</button>
+              <button class="btn btn--primary btn--small" type="button" data-restore-review hidden>Restore review</button>
             </div>
           </article>
       </div>

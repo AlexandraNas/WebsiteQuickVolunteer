@@ -1498,3 +1498,9 @@ a.status:hover { text-decoration: underline; }
 @media (max-width: 600px) { #contact-form .field-row { grid-template-columns: minmax(0, 1fr); } }
 /* Header that shows the right buttons when logged in or out */
 .mobile-menu__in, .mobile-menu__out { display: contents; }
+
+/* Admin reviews */
+.review-stars { color: #e0a100; letter-spacing: 1px; }
+.is-hidden-review .quote, .is-hidden-review h3 { opacity: .5; }
+/* Admin has three tabs: keep them inside the screen on small phones */
+@media (max-width: 600px) { [data-admin] .dash-tab { flex: 1 1 0; min-width: 0; padding: 10px 8px; font-size: 13px; white-space: normal; line-height: 1.2; } }
